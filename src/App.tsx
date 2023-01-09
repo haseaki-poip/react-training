@@ -1,4 +1,4 @@
-import Parent from "./components/Memo";
+import Parent from "./components/Memo2";
 
 const App = () => {
   return (
