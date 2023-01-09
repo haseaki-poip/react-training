@@ -1,4 +1,4 @@
-import Parent from "./components/Memo2";
+import Parent from "./components/UseCallback";
 
 const App = () => {
   return (
