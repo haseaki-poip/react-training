@@ -1,9 +1,9 @@
-import Reducer from "./components/Reducer";
+import Parent from "./components/Memo";
 
 const App = () => {
   return (
     <div className="App">
-      <Reducer />
+      <Parent />
     </div>
   );
 };
