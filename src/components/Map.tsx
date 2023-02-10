@@ -9,18 +9,38 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLng } from "leaflet";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 L.Icon.Default.imagePath =
   "//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/images/";
-
+type GeoType = {
+  lat: number;
+  lng: number;
+};
 const Map = () => {
-  const position = { lat: 51.505, lng: -0.09 };
-  const polygon = [
-    { lat: 51.505, lng: -0.09 },
-    { lat: 51.51, lng: -0.01 },
-    { lat: 51.52, lng: -0.09 },
-    { lat: 51.51, lng: -0.12 },
-  ];
+  const position = { lat: 35.16249, lng: 136.9843 };
+
   const fillBlueOptions = { fillColor: "blue" };
+  const [polygon, setPolygon] = useState<GeoType[]>([]);
+  useEffect(() => {
+    (async () => {
+      //jsonファイルはpublicフォルダ下に配置
+      const response = await axios.get(
+        "http://localhost:3000/N03-19_23_190101.geojson"
+      );
+
+      const geoDatas: number[][] =
+        response.data.features[0].geometry.coordinates[0];
+
+      const LatLngList: GeoType[] = [];
+      geoDatas.forEach((geoData: number[]) => {
+        LatLngList.push({ lat: geoData[1], lng: geoData[0] });
+      });
+      setPolygon(LatLngList);
+    })();
+  }, []);
+  console.log(polygon);
   return (
     <MapContainer
       center={position}
