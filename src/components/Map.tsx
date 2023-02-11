@@ -21,7 +21,11 @@ type GeoType = {
 const Map = () => {
   const position = { lat: 35.16249, lng: 136.9843 };
 
-  const fillBlueOptions = { fillColor: "blue" };
+  const fillBlueOptions = {
+    fillColor: "#ff6347", // 囲んだ中での色
+    color: "#ff6347", // 囲む線の色
+    opacity: 0.3, // 囲む線のopacity
+  };
   const [polygon, setPolygon] = useState<GeoType[]>([]);
   useEffect(() => {
     (async () => {
