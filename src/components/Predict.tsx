@@ -11,12 +11,6 @@ const Predict = () => {
   const imageElement = document.getElementById("cat") as HTMLImageElement;
 
   const predict = async () => {
-    const detectorConfig = {
-      architecture: "ResNet50",
-      outputStride: 32,
-      inputResolution: { width: 257, height: 200 },
-      quantBytes: 2,
-    };
     const detector = await poseDetection.createDetector(
       poseDetection.SupportedModels.PoseNet
     );

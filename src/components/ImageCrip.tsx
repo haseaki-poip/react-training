@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+import * as poseDetection from "@tensorflow-models/pose-detection";
+import "@tensorflow/tfjs-backend-webgl";
 
 const ImageCrip = () => {
+  const [src, setSrc] = useState("");
   const [crop, setCrop] = useState<any>({});
+  const imageRef = document.getElementById("rawImage") as HTMLImageElement;
+
   const onCrop = async () => {
-    const imageRef = document.getElementById("rawImage") as HTMLImageElement;
     if (imageRef && crop.width && crop.height) {
       const croppedImageUrl = await getCroppedImg(imageRef, crop);
       console.log("切り抜かれた画像のbase64データ: ", croppedImageUrl);
@@ -13,7 +17,7 @@ const ImageCrip = () => {
   };
   const getCroppedImg = (
     image: HTMLImageElement,
-    crop: { x: any; y: any; width: any; height: any }
+    crop: { x: any; y: any; width: any; height: any; unit: "px" }
   ) => {
     const canvas = document.createElement("canvas");
     const pixelRatio = window.devicePixelRatio;
@@ -37,16 +41,55 @@ const ImageCrip = () => {
       crop.width * scaleX,
       crop.height * scaleY
     );
-
-    return canvas.toDataURL("image/jpeg", 1.0);
+    const url = canvas.toDataURL("image/jpeg", 1.0);
+    setSrc(url);
+    return url;
   };
+
+  const predict = async () => {
+    const imageRef = document.getElementById("rawImage") as HTMLImageElement;
+    const detector = await poseDetection.createDetector(
+      poseDetection.SupportedModels.PoseNet
+    );
+    const estimationConfig = {
+      maxPoses: 5,
+      flipHorizontal: false,
+      scoreThreshold: 0.5,
+      nmsRadius: 20,
+    };
+    console.log(imageRef);
+    const poses = await detector.estimatePoses(imageRef, estimationConfig);
+    console.log(poses);
+
+    if (!poses.length) return;
+    const left_shoulder = poses[0].keypoints[5];
+    const right_shoulder = poses[0].keypoints[6];
+    const left_hip = poses[0].keypoints[11];
+    const right_hip = poses[0].keypoints[12];
+    const left_elbow = poses[0].keypoints[7];
+    const right_elbow = poses[0].keypoints[8];
+
+    const crop = {
+      x: right_elbow.x,
+      y: right_shoulder.y,
+      width: left_elbow.x - right_elbow.x,
+      height: right_hip.y - right_shoulder.y,
+      unit: "px",
+    };
+    setCrop(crop);
+    console.log(poses);
+  };
+  console.log(crop);
 
   return (
     <>
       <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
-        <img src="/images/maccho.jpeg" id="rawImage" alt="" />
+        <img src="/images/maccho2.jpeg" id="rawImage" alt="" />
       </ReactCrop>
+
       <button onClick={onCrop}>選択範囲で切り抜く</button>
+      <div onClick={() => predict()}>Predict</div>
+      <img src={src} alt="" />
     </>
   );
 };
