@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import * as poseDetection from "@tensorflow-models/pose-detection";
@@ -7,6 +7,19 @@ import "@tensorflow/tfjs-backend-webgl";
 const ImageCrip = () => {
   const [src, setSrc] = useState("");
   const [crop, setCrop] = useState<any>({});
+  const [detector, setDetector] = useState<poseDetection.PoseDetector>();
+
+  // 非同意処理はuseMemoが使えないためuseEffectを使用
+  useEffect(() => {
+    console.log("モデル作成");
+    (async () => {
+      const detector = await poseDetection.createDetector(
+        poseDetection.SupportedModels.PoseNet
+      );
+      setDetector(detector);
+    })();
+  }, []);
+
   const imageRef = document.getElementById("rawImage") as HTMLImageElement;
 
   const onCrop = async () => {
@@ -48,9 +61,11 @@ const ImageCrip = () => {
 
   const predict = async () => {
     const imageRef = document.getElementById("rawImage") as HTMLImageElement;
-    const detector = await poseDetection.createDetector(
-      poseDetection.SupportedModels.PoseNet
-    );
+    // const detector = await poseDetection.createDetector(
+    //   poseDetection.SupportedModels.PoseNet
+    // );
+    if (!detector) return;
+
     const estimationConfig = {
       maxPoses: 5,
       flipHorizontal: false,
@@ -84,7 +99,7 @@ const ImageCrip = () => {
   return (
     <>
       <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
-        <img src="/images/maccho2.jpeg" id="rawImage" alt="" />
+        <img src="/images/maccho3.jpeg" id="rawImage" alt="" />
       </ReactCrop>
 
       <button onClick={onCrop}>選択範囲で切り抜く</button>
