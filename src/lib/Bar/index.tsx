@@ -1,8 +1,14 @@
-import { ChangeEvent, MouseEvent, useCallback, useState } from "react";
+import {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 const Bar = () => {
   const halfSizeCursor = 16;
-  const maxInputNum = 100;
+  const maxInputNum = 384; // barの長さpx
 
   const [absolutePositionY, setAbsolutePositionY] = useState({
     pre: -halfSizeCursor,
@@ -13,13 +19,14 @@ const Bar = () => {
   );
 
   const moveCursorByClick = (e: React.MouseEvent<HTMLElement>) => {
+    console.log(e.currentTarget.getBoundingClientRect());
     const barPositionY = e.currentTarget.getBoundingClientRect().y;
     const clickPositionOnPageY = e.pageY;
     const clickPositionOnBarY = clickPositionOnPageY - barPositionY;
     const now = clickPositionOnBarY - halfSizeCursor;
     setAbsolutePositionY({
       pre: absolutePositionY.now,
-      now: clickPositionOnBarY - halfSizeCursor,
+      now: now,
     });
 
     setInputNumber(now + halfSizeCursor);
@@ -27,9 +34,32 @@ const Bar = () => {
 
   const onEdit = (e: ChangeEvent<HTMLInputElement>) => {
     const number = Number(e.target.value);
-    if (number > 100) return setInputNumber(100 - halfSizeCursor);
-    if (number < 0) return setInputNumber(-halfSizeCursor);
-    return setInputNumber(number);
+    if (number > maxInputNum) {
+      setInputNumber(maxInputNum);
+      const now = maxInputNum - halfSizeCursor;
+      setAbsolutePositionY({
+        pre: absolutePositionY.now,
+        now: now,
+      });
+      return;
+    }
+    if (number < 0) {
+      setInputNumber(0);
+      const now = -halfSizeCursor;
+      setAbsolutePositionY({
+        pre: absolutePositionY.now,
+        now: now,
+      });
+      return;
+    }
+
+    setInputNumber(number);
+    const now = number - halfSizeCursor;
+    setAbsolutePositionY({
+      pre: absolutePositionY.now,
+      now: now,
+    });
+    return;
   };
 
   return (
