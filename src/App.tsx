@@ -4,12 +4,13 @@ import Map from "./components/Map";
 import Predict from "./components/Predict";
 import Parent from "./components/UseCallback";
 import Bar from "./lib/Bar";
+import Slider from "./lib/Slider";
 
 const App = () => {
   return (
     <div className="App">
       <div className="m-10">
-        <Bar></Bar>
+        <Slider></Slider>
       </div>
     </div>
   );
