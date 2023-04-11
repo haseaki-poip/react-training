@@ -10,7 +10,11 @@ const App = () => {
   return (
     <div className="App">
       <div className="m-10">
-        <Slider></Slider>
+        <Slider>
+          <div className="bg-black min-w-[600px] h-[500px] rounded-xl"></div>
+          <div className="bg-black min-w-[600px] h-[500px] rounded-xl"></div>
+          <div className="bg-black min-w-[600px] h-[500px] rounded-xl"></div>
+        </Slider>
       </div>
     </div>
   );
