@@ -13,7 +13,7 @@ type Props = {
 const Slider = ({ children }: Props) => {
   const countOfChildren = Children.count(children);
   const [startX, setStartX] = useState(0);
-  const [deltaX, setDeltaX] = useState(0);
+  const [positionX, setPositionX] = useState(0);
 
   const handleMouseDown = (
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
@@ -23,39 +23,40 @@ const Slider = ({ children }: Props) => {
   const handleMouseMove = (
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
   ) => {
+    // クリックしていない状態でもeventが発火してしまうため、クリックしているかどうか判別
     if (e.buttons === 1) {
-      setDeltaX(e.clientX - startX);
+      const deltaX = e.clientX - startX;
+      setPositionX((x) => x + deltaX);
+      setStartX(e.clientX);
     }
   };
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setStartX(e.touches[0].clientX);
+  };
 
-  console.log(deltaX);
-
-  const onDrag = (
-    e:
-      | React.TouchEvent<HTMLDivElement>
-      | MouseEvent<HTMLDivElement, globalThis.MouseEvent>
-  ) => {
-    console.log(e);
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const deltaX = e.touches[0].clientX - startX;
+    setPositionX((x) => x + deltaX);
+    setStartX(e.touches[0].clientX);
   };
 
   return (
     <>
       <style>
-        {/* アニメーション名も更新しないと反映されない */}
         {`
           .positionX {
-            transform: translateX(${deltaX}px);
+            transform: translateX(${positionX}px);
           }
-    
         `}
       </style>
-      <div className="w-full overflow-hidden">
-        <div
-          //   onTouchMove={(e) => onDrag(e)}
-          onMouseDown={(e) => handleMouseDown(e)}
-          onMouseMove={(e) => handleMouseMove(e)}
-          className="flex gap-64 justify-center items-center positionX"
-        >
+      <div
+        onTouchStart={(e) => handleTouchStart(e)}
+        onTouchMove={(e) => handleTouchMove(e)}
+        onMouseDown={(e) => handleMouseDown(e)}
+        onMouseMove={(e) => handleMouseMove(e)}
+        className="w-full overflow-hidden"
+      >
+        <div className="flex gap-64 justify-center items-center positionX">
           {children}
         </div>
         <div></div>
