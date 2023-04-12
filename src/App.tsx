@@ -11,6 +11,7 @@ const App = () => {
     <div className="App">
       <div className="m-10">
         <Slider>
+          {/* overflow-hiddenをしていてもmin-wを設定しないと要素が小さくなって画面内に収まるだけ */}
           <div className="bg-black min-w-[600px] h-[500px] rounded-xl"></div>
           <div className="bg-black min-w-[600px] h-[500px] rounded-xl"></div>
           <div className="bg-black min-w-[600px] h-[500px] rounded-xl"></div>

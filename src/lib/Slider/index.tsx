@@ -1,19 +1,66 @@
-import { Children, ReactNode } from "react";
+import {
+  Children,
+  DragEvent,
+  MouseEvent,
+  ReactNode,
+  useCallback,
+  useState,
+} from "react";
 
 type Props = {
   children: ReactNode;
 };
 const Slider = ({ children }: Props) => {
   const countOfChildren = Children.count(children);
-  console.log(countOfChildren);
+  const [startX, setStartX] = useState(0);
+  const [deltaX, setDeltaX] = useState(0);
+
+  const handleMouseDown = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    setStartX(e.clientX);
+  };
+  const handleMouseMove = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    if (e.buttons === 1) {
+      setDeltaX(e.clientX - startX);
+    }
+  };
+
+  console.log(deltaX);
+
+  const onDrag = (
+    e:
+      | React.TouchEvent<HTMLDivElement>
+      | MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    console.log(e);
+  };
+
   return (
-    <div className="w-full">
-      <div className="flex gap-64 justify-center items-center overflow-hidden">
-        {/* overflow-hiddenをしていてもmin-wを設定しないと要素が小さくなって画面内に収まるだけ */}
-        {children}
+    <>
+      <style>
+        {/* アニメーション名も更新しないと反映されない */}
+        {`
+          .positionX {
+            transform: translateX(${deltaX}px);
+          }
+    
+        `}
+      </style>
+      <div className="w-full overflow-hidden">
+        <div
+          //   onTouchMove={(e) => onDrag(e)}
+          onMouseDown={(e) => handleMouseDown(e)}
+          onMouseMove={(e) => handleMouseMove(e)}
+          className="flex gap-64 justify-center items-center positionX"
+        >
+          {children}
+        </div>
+        <div></div>
       </div>
-      <div></div>
-    </div>
+    </>
   );
 };
 
