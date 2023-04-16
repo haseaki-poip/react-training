@@ -2,11 +2,41 @@ import {
   Children,
   MouseEvent,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
-  useState,
+  useReducer,
 } from "react";
 import { useWindowDimensions } from "./useWindowDimensions";
+
+type StateType = {
+  centerIndex: number;
+  startX: number;
+  beforePositionX: number;
+  positionX: number;
+  isAnimation: boolean;
+};
+
+const initialPositionState = {
+  centerIndex: 0,
+  startX: 0,
+  beforePositionX: 0,
+  positionX: 0,
+  isAnimation: false,
+};
+
+type Action =
+  | {
+      type: "MOVE_START";
+      payload: { startX: number };
+    }
+  | {
+      type: "MOVING";
+      payload: { startX: number; deltaX: number };
+    }
+  | {
+      type: "MOVE_RETURN" | "MOVE_NEXT" | "MOVE_BACK" | "CHANGE_WIDTH";
+    };
 
 type Props = {
   children: ReactNode;
@@ -14,20 +44,75 @@ type Props = {
 const Slider = ({ children }: Props) => {
   const { width } = useWindowDimensions();
   const countOfChildren = Children.count(children);
-  const [centerIndex, setCenterIndex] = useState(1);
-  const [startX, setStartX] = useState(0);
-  const [positionX, setPositionX] = useState(-centerIndex * width);
-  const [beforePositionX, setBeforePositionX] = useState(-centerIndex * width);
-  const [isAnimation, setIsAnimation] = useState(false);
+
+  const reducer = useCallback(
+    (state: StateType, action: Action) => {
+      switch (action.type) {
+        case "MOVE_START":
+          return {
+            ...state,
+            startX: action.payload.startX,
+            isAnimation: false,
+          };
+        case "MOVING":
+          const nextPositionX = state.positionX + action.payload.deltaX;
+          return {
+            ...state,
+            positionX: nextPositionX,
+            startX: action.payload.startX,
+          };
+        case "MOVE_RETURN":
+          return {
+            ...state,
+            beforePositionX: state.positionX,
+            positionX: -state.centerIndex * width,
+            isAnimation: true,
+          };
+        case "MOVE_NEXT":
+          const nextCenterIndex = state.centerIndex + 1;
+          return {
+            ...state,
+            centerIndex: nextCenterIndex,
+            beforePositionX: state.positionX,
+            positionX: -nextCenterIndex * width,
+            isAnimation: true,
+          };
+        case "MOVE_BACK":
+          const backedCenterIndex = state.centerIndex - 1;
+          return {
+            ...state,
+            centerIndex: backedCenterIndex,
+            beforePositionX: state.positionX,
+            positionX: -backedCenterIndex * width,
+            isAnimation: true,
+          };
+        case "CHANGE_WIDTH":
+          return {
+            ...state,
+            positionX: -state.centerIndex * width,
+          };
+      }
+    },
+    [width]
+  );
+
+  const [positionState, dispatch] = useReducer(reducer, initialPositionState);
 
   useEffect(() => {
-    setPositionX(-centerIndex * width);
-  }, [centerIndex, width]);
+    dispatch({
+      type: "CHANGE_WIDTH",
+    });
+  }, [width]);
 
   const handleMouseDown = (
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
   ) => {
-    setStartX(e.clientX);
+    dispatch({
+      type: "MOVE_START",
+      payload: {
+        startX: e.clientX,
+      },
+    });
   };
   const handleMouseMove = (
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
@@ -35,71 +120,93 @@ const Slider = ({ children }: Props) => {
     // クリックしていない状態でもeventが発火してしまうため、クリックしているかどうか判別
     if (e.buttons === 0) return;
 
-    const deltaX = e.clientX - startX;
+    const deltaX = e.clientX - positionState.startX;
 
     // 要素がない方向へスクロールできなくする
-    if (centerIndex === 0 && deltaX > 0) return;
-    if (centerIndex === countOfChildren - 1 && deltaX < 0) return;
+    if (positionState.centerIndex === 0 && deltaX > 0) return;
+    if (positionState.centerIndex === countOfChildren - 1 && deltaX < 0) return;
 
-    setPositionX((x) => x + deltaX);
-    setStartX(e.clientX);
+    dispatch({
+      type: "MOVING",
+      payload: {
+        startX: e.clientX,
+        deltaX: deltaX,
+      },
+    });
   };
   const handleMouseUp = (
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
   ) => {
-    setIsAnimation(true);
-    setBeforePositionX(positionX);
-    const deltaX = -centerIndex * width - positionX;
-    if (deltaX > 200) {
-      return setCenterIndex((i) => i + 1);
-    }
-    if (deltaX < -200) {
-      return setCenterIndex((i) => i - 1);
-    }
-    setPositionX(-centerIndex * width);
+    const deltaX = -positionState.centerIndex * width - positionState.positionX;
+    const actionType = (() => {
+      if (deltaX > 200) {
+        return "MOVE_NEXT";
+      }
+      if (deltaX < -200) {
+        return "MOVE_BACK";
+      }
+      return "MOVE_RETURN";
+    })();
+
+    return dispatch({
+      type: actionType,
+    });
   };
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setStartX(e.touches[0].clientX);
+    dispatch({
+      type: "MOVE_START",
+      payload: {
+        startX: e.touches[0].clientX,
+      },
+    });
   };
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const deltaX = e.touches[0].clientX - startX;
+    const deltaX = e.touches[0].clientX - positionState.startX;
 
     // 要素がない方向へスクロールできなくする
-    if (centerIndex === 0 && deltaX > 0) return;
-    if (centerIndex === countOfChildren - 1 && deltaX < 0) return;
+    if (positionState.centerIndex === 0 && deltaX > 0) return;
+    if (positionState.centerIndex === countOfChildren - 1 && deltaX < 0) return;
 
-    setPositionX((x) => x + deltaX);
-    setStartX(e.touches[0].clientX);
+    dispatch({
+      type: "MOVING",
+      payload: {
+        startX: e.touches[0].clientX,
+        deltaX: deltaX,
+      },
+    });
   };
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    setIsAnimation(true);
-    setBeforePositionX(positionX);
-    const deltaX = -centerIndex * width - positionX;
-    if (deltaX > 200) {
-      return setCenterIndex((i) => i + 1);
-    }
-    if (deltaX < -200) {
-      return setCenterIndex((i) => i - 1);
-    }
-    setPositionX(-centerIndex * width);
+    const deltaX = -positionState.centerIndex * width - positionState.positionX;
+    const actionType = (() => {
+      if (deltaX > 200) {
+        return "MOVE_NEXT";
+      }
+      if (deltaX < -200) {
+        return "MOVE_BACK";
+      }
+      return "MOVE_RETURN";
+    })();
+
+    return dispatch({
+      type: actionType,
+    });
   };
 
   const style = useMemo(() => {
-    if (isAnimation) {
-      setIsAnimation(false);
+    if (positionState.isAnimation) {
       return `
         .positionX {
-          animation-name: move-animation-${positionX};
+          animation-name: move-animation-${positionState.positionX};
             animation-fill-mode: forwards;
             animation-duration: 0.5s;
             animation-timing-function: ease;
         }
-        @keyframes move-animation-${positionX} {
+        @keyframes move-animation-${positionState.positionX} {
             from {
-                transform: translateX(${beforePositionX}px);
+                transform: translateX(${positionState.beforePositionX}px);
             }
             to {
-                transform: translateX(${positionX}px);
+                transform: translateX(${positionState.positionX}px);
             }
         }
       `;
@@ -107,10 +214,10 @@ const Slider = ({ children }: Props) => {
 
     return `
     .positionX {
-        transform: translateX(${positionX}px);
+        transform: translateX(${positionState.positionX}px);
       }
     `;
-  }, [positionX]);
+  }, [positionState.positionX]);
 
   return (
     <>
