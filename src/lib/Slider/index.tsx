@@ -229,8 +229,10 @@ const Slider = ({ children }: Props) => {
         onMouseDown={(e) => handleMouseDown(e)}
         onMouseMove={(e) => handleMouseMove(e)}
         onMouseUp={(e) => handleMouseUp(e)}
-        className="w-full overflow-hidden"
+        className="w-full overflow-hidden relative"
       >
+        <div className="absolute top-1/2 left-0 z-50 -translate-y-1/2 w-10 h-10 bg-slate-400"></div>
+        <div className="absolute top-1/2 right-0 z-50 -translate-y-1/2 w-10 h-10 bg-slate-400"></div>
         <div className="flex items-center positionX cursor-pointer">
           {Children.map(children, (child) => {
             return (
