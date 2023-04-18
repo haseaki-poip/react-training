@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, useState } from "react";
 
 const Bar = () => {
   const halfSizeCursor = 16;

@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 
 export const useWindowDimensions = () => {
   const getWindowDimensions = () => {

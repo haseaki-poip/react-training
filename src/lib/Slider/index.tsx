@@ -8,14 +8,7 @@ import {
   useReducer,
 } from "react";
 import { useWindowDimensions } from "./useWindowDimensions";
-
-type StateType = {
-  centerIndex: number;
-  startX: number;
-  beforePositionX: number;
-  positionX: number;
-  isAnimation: boolean;
-};
+import type { StateType, Action } from "./type";
 
 const initialPositionState = {
   centerIndex: 0,
@@ -24,19 +17,6 @@ const initialPositionState = {
   positionX: 0,
   isAnimation: false,
 };
-
-type Action =
-  | {
-      type: "MOVE_START";
-      payload: { startX: number };
-    }
-  | {
-      type: "MOVING";
-      payload: { startX: number; deltaX: number };
-    }
-  | {
-      type: "MOVE_RETURN" | "MOVE_NEXT" | "MOVE_BACK" | "CHANGE_WIDTH";
-    };
 
 type Props = {
   children: ReactNode;
@@ -231,8 +211,22 @@ const Slider = ({ children }: Props) => {
         onMouseUp={(e) => handleMouseUp(e)}
         className="w-full overflow-hidden relative"
       >
-        <div className="absolute top-1/2 left-0 z-50 -translate-y-1/2 w-10 h-10 bg-slate-400"></div>
-        <div className="absolute top-1/2 right-0 z-50 -translate-y-1/2 w-10 h-10 bg-slate-400"></div>
+        {positionState.centerIndex !== 0 ? (
+          <div
+            onClick={() => dispatch({ type: "MOVE_BACK" })}
+            className="absolute top-1/2 left-5 z-50 md:left-10 lg:left-20 -translate-y-1/2 group cursor-pointer"
+          >
+            <div className="w-8 h-8 md:w-16 md:h-16 border-t-4 border-l-4 border-gray-400 -rotate-45 group-hover:border-gray-600"></div>
+          </div>
+        ) : null}
+        {positionState.centerIndex !== countOfChildren - 1 ? (
+          <div
+            onClick={() => dispatch({ type: "MOVE_NEXT" })}
+            className="absolute top-1/2 right-5 z-50 md:right-10 lg:right-20 -translate-y-1/2 group cursor-pointer"
+          >
+            <div className="w-8 h-8 md:w-16 md:h-16 border-t-4 border-r-4 rotate-45 border-gray-400 group-hover:border-gray-600"></div>
+          </div>
+        ) : null}
         <div className="flex items-center positionX cursor-pointer">
           {Children.map(children, (child) => {
             return (
@@ -242,7 +236,6 @@ const Slider = ({ children }: Props) => {
             );
           })}
         </div>
-        <div></div>
       </div>
     </>
   );
