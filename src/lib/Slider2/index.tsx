@@ -6,81 +6,85 @@ import {
   useEffect,
   useMemo,
   useReducer,
-  useRef,
 } from "react";
 import { useWindowDimensions } from "./useWindowDimensions";
 import type { StateType, Action } from "./type";
 
-const initialPositionState = {
-  centerIndex: 0,
-  startX: 0,
-  beforePositionX: 0,
-  positionX: 0,
-  isAnimation: false,
-};
+const slideWidth_vw = 264;
+const slideWidth_class = "w-[" + slideWidth_vw + "vw]";
 
 type Props = {
   children: ReactNode;
 };
 const Slider = ({ children }: Props) => {
   const { width } = useWindowDimensions();
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    console.log(ref.current?.clientWidth);
-  }, [ref.current?.clientWidth]);
   const countOfChildren = Children.count(children);
 
-  const reducer = useCallback(
-    (state: StateType, action: Action) => {
-      switch (action.type) {
-        case "MOVE_START":
-          return {
-            ...state,
-            startX: action.payload.startX,
-            isAnimation: false,
-          };
-        case "MOVING":
-          const nextPositionX = state.positionX + action.payload.deltaX;
-          return {
-            ...state,
-            positionX: nextPositionX,
-            startX: action.payload.startX,
-          };
-        case "MOVE_RETURN":
-          return {
-            ...state,
-            beforePositionX: state.positionX,
-            positionX: -state.centerIndex * width,
-            isAnimation: true,
-          };
-        case "MOVE_NEXT":
-          const nextCenterIndex = state.centerIndex + 1;
-          return {
-            ...state,
-            centerIndex: nextCenterIndex,
-            beforePositionX: state.positionX,
-            positionX: -nextCenterIndex * width,
-            isAnimation: true,
-          };
-        case "MOVE_BACK":
-          const backedCenterIndex = state.centerIndex - 1;
-          return {
-            ...state,
-            centerIndex: backedCenterIndex,
-            beforePositionX: state.positionX,
-            positionX: -backedCenterIndex * width,
-            isAnimation: true,
-          };
-        case "CHANGE_WIDTH":
-          return {
-            ...state,
-            positionX: -state.centerIndex * width,
-          };
-      }
+  const positionByIndex = useCallback(
+    (centerIndex: number) => {
+      return (
+        width / 2 -
+        ((slideWidth_vw * width) / 100 / (2 * countOfChildren)) *
+          (1 + 2 * centerIndex)
+      );
     },
     [width]
   );
+  const initialPositionState = {
+    centerIndex: 0,
+    startX: positionByIndex(0),
+    beforePositionX: positionByIndex(0),
+    positionX: positionByIndex(0),
+    isAnimation: false,
+  };
+
+  const reducer = (state: StateType, action: Action) => {
+    switch (action.type) {
+      case "MOVE_START":
+        return {
+          ...state,
+          startX: action.payload.startX,
+          isAnimation: false,
+        };
+      case "MOVING":
+        const nextPositionX = state.positionX + action.payload.deltaX;
+        return {
+          ...state,
+          startX: action.payload.startX,
+          positionX: nextPositionX,
+        };
+      case "MOVE_RETURN":
+        return {
+          ...state,
+          beforePositionX: state.positionX,
+          positionX: positionByIndex(state.centerIndex),
+          isAnimation: true,
+        };
+      case "MOVE_NEXT":
+        const nextCenterIndex = state.centerIndex + 1;
+        return {
+          ...state,
+          centerIndex: nextCenterIndex,
+          beforePositionX: state.positionX,
+          positionX: positionByIndex(nextCenterIndex),
+          isAnimation: true,
+        };
+      case "MOVE_BACK":
+        const backedCenterIndex = state.centerIndex - 1;
+        return {
+          ...state,
+          centerIndex: backedCenterIndex,
+          beforePositionX: state.positionX,
+          positionX: positionByIndex(backedCenterIndex),
+          isAnimation: true,
+        };
+      case "CHANGE_WIDTH":
+        return {
+          ...state,
+          positionX: positionByIndex(state.centerIndex),
+        };
+    }
+  };
 
   const [positionState, dispatch] = useReducer(reducer, initialPositionState);
 
@@ -123,7 +127,8 @@ const Slider = ({ children }: Props) => {
   const handleMouseUp = (
     e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
   ) => {
-    const deltaX = -positionState.centerIndex * width - positionState.positionX;
+    const deltaX =
+      positionByIndex(positionState.centerIndex) - positionState.positionX;
     const actionType = (() => {
       if (deltaX > 200) {
         return "MOVE_NEXT";
@@ -162,7 +167,8 @@ const Slider = ({ children }: Props) => {
     });
   };
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    const deltaX = -positionState.centerIndex * width - positionState.positionX;
+    const deltaX =
+      positionByIndex(positionState.centerIndex) - positionState.positionX;
     const actionType = (() => {
       if (deltaX > 200) {
         return "MOVE_NEXT";
@@ -182,12 +188,12 @@ const Slider = ({ children }: Props) => {
     if (positionState.isAnimation) {
       return `
         .positionX {
-          animation-name: move-animation-${positionState.positionX};
+          animation-name: move-animation;
             animation-fill-mode: forwards;
             animation-duration: 0.5s;
             animation-timing-function: ease;
         }
-        @keyframes move-animation-${positionState.positionX} {
+        @keyframes move-animation {
             from {
                 transform: translateX(${positionState.beforePositionX}px);
             }
@@ -200,7 +206,7 @@ const Slider = ({ children }: Props) => {
 
     return `
     .positionX {
-        transform: translateX(-82vw);
+        transform: translateX(${positionState.positionX}px);
       }
     `;
   }, [positionState.positionX]);
@@ -217,13 +223,14 @@ const Slider = ({ children }: Props) => {
         onMouseUp={(e) => handleMouseUp(e)}
         className="w-full overflow-hidden relative"
       >
-        <div className="w-[264vw] flex items-center justify-around positionX cursor-pointer">
+        <div
+          className={
+            slideWidth_class +
+            " flex items-center justify-around positionX cursor-pointer"
+          }
+        >
           {Children.map(children, (child) => {
-            return (
-              <div ref={ref} className={"h-full"}>
-                {child}
-              </div>
-            );
+            return <div className="h-full">{child}</div>;
           })}
         </div>
       </div>

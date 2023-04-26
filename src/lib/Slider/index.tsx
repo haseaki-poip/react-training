@@ -174,6 +174,9 @@ const Slider = ({ children }: Props) => {
 
   const style = useMemo(() => {
     if (positionState.isAnimation) {
+      console.log(positionState.beforePositionX);
+
+      console.log(positionState.positionX);
       return `
         .positionX {
           animation-name: move-animation-${positionState.positionX};

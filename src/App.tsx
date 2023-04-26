@@ -5,6 +5,7 @@ import Map from "./components/Map";
 import Predict from "./components/Predict";
 import Parent from "./components/UseCallback";
 import Bar from "./lib/Bar";
+import Slider from "./lib/Slider";
 import Slider2 from "./lib/Slider2";
 
 const App = () => {
