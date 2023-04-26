@@ -7,6 +7,7 @@ import Parent from "./components/UseCallback";
 import Bar from "./lib/Bar";
 import Slider from "./lib/Slider";
 import Slider2 from "./lib/Slider2";
+import Gallery from "./lib/Gallery";
 
 const App = () => {
   return (
@@ -27,12 +28,7 @@ const App = () => {
           </div>
         </Slider2>
       </div>
-
-      <div className="flex">
-        <div className="w-10 h-10 bg-black m-3 translate-x-10"></div>
-        <div className="w-10 h-10 bg-black m-3 translate-x-10"></div>
-        <div className="w-10 h-10 bg-black m-3 translate-x-10"></div>
-      </div>
+      <Gallery />
     </div>
   );
 };
