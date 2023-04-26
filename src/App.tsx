@@ -12,7 +12,7 @@ import Gallery from "./lib/Gallery";
 const App = () => {
   return (
     <div className="App">
-      <div className="mt-10">
+      <div className="my-10">
         <Slider2>
           {/* overflow-hiddenをしていてもmin-wを設定しないと要素が小さくなって画面内に収まるだけ */}
 
@@ -28,7 +28,9 @@ const App = () => {
           </div>
         </Slider2>
       </div>
-      <Gallery />
+      <div className="my-10">
+        <Gallery />
+      </div>
     </div>
   );
 };
