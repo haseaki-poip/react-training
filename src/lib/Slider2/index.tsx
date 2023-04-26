@@ -10,8 +10,9 @@ import {
 import { useWindowDimensions } from "./useWindowDimensions";
 import type { StateType, Action } from "./type";
 
+// スライドの全体の大きさを決定
+// 以下の場合画面サイズの2.64倍
 const slideWidth_vw = 264;
-const slideWidth_class = "w-[" + slideWidth_vw + "vw]";
 
 type Props = {
   children: ReactNode;
@@ -190,7 +191,7 @@ const Slider = ({ children }: Props) => {
         .positionX {
           animation-name: move-animation;
             animation-fill-mode: forwards;
-            animation-duration: 0.5s;
+            animation-duration: 0.4s;
             animation-timing-function: ease;
         }
         @keyframes move-animation {
@@ -224,11 +225,9 @@ const Slider = ({ children }: Props) => {
         className="w-full overflow-hidden relative"
       >
         <div
-          className={
-            slideWidth_class +
-            " flex items-center justify-around positionX cursor-pointer"
-          }
+          className={`w-[${slideWidth_vw}vw] flex items-center justify-around positionX cursor-pointer`}
         >
+          {/* space-aroundでそれぞれの要素が等しい領域を持つことが重要 */}
           {Children.map(children, (child) => {
             return <div className="h-full">{child}</div>;
           })}
