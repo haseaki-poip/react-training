@@ -200,7 +200,7 @@ const Slider = ({ children }: Props) => {
 
     return `
     .positionX {
-        transform: translateX(${positionState.positionX}px);
+        transform: translateX(-82vw);
       }
     `;
   }, [positionState.positionX]);
@@ -217,15 +217,10 @@ const Slider = ({ children }: Props) => {
         onMouseUp={(e) => handleMouseUp(e)}
         className="w-full overflow-hidden relative"
       >
-        <div className="flex items-center positionX cursor-pointer">
+        <div className="w-[264vw] flex items-center justify-around positionX cursor-pointer">
           {Children.map(children, (child) => {
             return (
-              <div
-                ref={ref}
-                className={
-                  "px-[30px] h-full flex justify-center items-center bg-slate-400"
-                }
-              >
+              <div ref={ref} className={"h-full"}>
                 {child}
               </div>
             );
