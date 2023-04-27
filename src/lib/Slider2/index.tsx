@@ -9,15 +9,15 @@ import {
 } from "react";
 import { useWindowDimensions } from "./useWindowDimensions";
 import type { StateType, Action } from "./type";
-// スライドの全体の大きさを決定
-// 以下の場合画面サイズの2.64倍
-const slideWidth_vw = 264;
-const slideWidthClass = "w-[" + slideWidth_vw + "vw]";
 
 type Props = {
   children: ReactNode;
 };
 const Slider = ({ children }: Props) => {
+  // スライドの全体の大きさを決定
+  // 以下の場合画面サイズの2.64倍
+  const slideWidth_vw = 264;
+
   const { width } = useWindowDimensions();
   const countOfChildren = Children.count(children);
 
@@ -225,6 +225,7 @@ const Slider = ({ children }: Props) => {
         className="w-full overflow-hidden relative"
       >
         <div
+          // tailwindは動的なクラス名を使用できない
           style={{ width: `${slideWidth_vw}vw` }}
           className="flex items-center justify-around positionX cursor-pointer"
         >
