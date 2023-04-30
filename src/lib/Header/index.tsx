@@ -41,7 +41,7 @@ const Header = (props: Props) => {
       }
     >
       <div className="w-full h-full flex">
-        <div className="w-14 h-14 my-auto mx-auto cursor-pointer">
+        <div className="w-12 h-12 my-auto mx-auto cursor-pointer">
           <img className="w-full h-full" src="/logo192.png" id="logo" alt="" />
         </div>
         <div

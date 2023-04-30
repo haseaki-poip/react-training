@@ -2,7 +2,7 @@ import { memo } from "react";
 
 const MenuButton = memo(({ isOpen }: { isOpen: boolean }) => {
   return (
-    <div className="w-10 h-14 relative">
+    <div className="w-8 h-12 relative">
       <i
         className={
           "bg-white w-full h-0.5 absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all ease-out duration-300 " +

@@ -14,7 +14,7 @@ const App = () => {
   return (
     <div className="App">
       <Header ControlStartPosition={300} initIsShowHeader={true} />
-      <div className="my-20">
+      <div className="my-28">
         <Slider2>
           {/* overflow-hiddenをしていてもmin-wを設定しないと要素が小さくなって画面内に収まるだけ */}
 
