@@ -13,8 +13,8 @@ import Header from "./lib/Header";
 const App = () => {
   return (
     <div className="App">
-      <Header />
-      <div className="my-10">
+      <Header ControlStartPosition={300} initIsShowHeader={true} />
+      <div className="my-20">
         <Slider2>
           {/* overflow-hiddenをしていてもmin-wを設定しないと要素が小さくなって画面内に収まるだけ */}
 
