@@ -8,10 +8,12 @@ import Bar from "./lib/Bar";
 import Slider from "./lib/Slider";
 import Slider2 from "./lib/Slider2";
 import Gallery from "./lib/Gallery";
+import Header from "./lib/Header";
 
 const App = () => {
   return (
     <div className="App">
+      <Header />
       <div className="my-10">
         <Slider2>
           {/* overflow-hiddenをしていてもmin-wを設定しないと要素が小さくなって画面内に収まるだけ */}
