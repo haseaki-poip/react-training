@@ -131,10 +131,10 @@ const Slider = ({ children }: Props) => {
     const deltaX =
       positionByIndex(positionState.centerIndex) - positionState.positionX;
     const actionType = (() => {
-      if (deltaX > 200) {
+      if (deltaX > 35) {
         return "MOVE_NEXT";
       }
-      if (deltaX < -200) {
+      if (deltaX < -35) {
         return "MOVE_BACK";
       }
       return "MOVE_RETURN";
@@ -171,10 +171,10 @@ const Slider = ({ children }: Props) => {
     const deltaX =
       positionByIndex(positionState.centerIndex) - positionState.positionX;
     const actionType = (() => {
-      if (deltaX > 200) {
+      if (deltaX > 35) {
         return "MOVE_NEXT";
       }
-      if (deltaX < -200) {
+      if (deltaX < -35) {
         return "MOVE_BACK";
       }
       return "MOVE_RETURN";
