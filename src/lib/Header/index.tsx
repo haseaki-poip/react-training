@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import MenuButton from "./MenuButton";
 import useScroll from "./useScroll";
+import SideMenu from "./SideMenu";
 
 type Props = {
   ControlStartPosition: number;
@@ -51,6 +52,7 @@ const Header = (props: Props) => {
           <MenuButton isOpen={isOpenMenu} />
         </div>
       </div>
+      <SideMenu isOpen={isOpenMenu} />
     </div>
   );
 };
