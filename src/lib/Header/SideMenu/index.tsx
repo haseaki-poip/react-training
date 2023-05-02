@@ -34,25 +34,31 @@ const SideMenu = memo(({ isOpenMenu }: { isOpenMenu: boolean }) => {
                         border-right: 1px solid white;
                     }`}
             </style>
-            <li className="bg-gray-40 h-16 flex my-4 relative after-arrow">
+            <li className="bg-gray-40 h-16 flex my-4 group relative after-arrow">
               <a href="/" className="flex items-center flex-grow pl-8">
-                <span className="text-2xl">Home</span>
+                <span className="text-2xl transition-all linear duration-300 group-hover:translate-x-4">
+                  Home
+                </span>
               </a>
             </li>
-            <li className="bg-gray-40 h-16 flex my-4 relative after-arrow">
+            <li className="bg-gray-40 h-16 flex my-4 group relative after-arrow">
               <a href="/" className="flex items-center flex-grow pl-8">
-                <span className="text-2xl">About us</span>
+                <span className="text-2xl transition-all linear duration-300 group-hover:translate-x-4">
+                  About us
+                </span>
               </a>
             </li>
 
             <li
-              className="bg-gray-40 h-16 flex my-4 relative after-arrow"
+              className="bg-gray-40 h-16 flex my-4 group relative after-arrow"
               onClick={() =>
                 setIsOpenSubmenu((prevIsOpenSubMenu) => !prevIsOpenSubMenu)
               }
             >
               <div className="flex items-center flex-grow pl-8 cursor-pointer">
-                <span className="text-2xl">Design Tent</span>
+                <span className="text-2xl transition-all linear duration-300 group-hover:translate-x-4">
+                  Design Tent
+                </span>
               </div>
             </li>
           </ul>
