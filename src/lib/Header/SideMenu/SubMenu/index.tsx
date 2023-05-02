@@ -14,7 +14,7 @@ const SubMenu = memo(({ isOpenSubMenu, handleBackButton }: Props) => {
         (isOpenSubMenu ? "left-0 md:left-full" : "-left-full md:left-0")
       }
     >
-      <div className="bg-[#232323] w-full h-full">
+      <div className="bg-[#232323] border-t-[1px] border-t-white w-full h-full">
         <div className="text-white">
           <ul>
             <li onClick={handleBackButton}>back</li>
