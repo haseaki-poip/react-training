@@ -20,18 +20,47 @@ const SideMenu = memo(({ isOpenMenu }: { isOpenMenu: boolean }) => {
     >
       <div className="bg-[#161616] border-t-[1px] border-t-white w-full h-full">
         <div className="text-white">
-          <ul>
-            <li>Home</li>
-            <li>About us</li>
+          <ul className="mt-10">
+            <style>
+              {`.after-arrow:after {
+                        content: ' ';
+                        width: 16px;
+                        height: 16px;
+                        position: absolute;
+                        top: 50%;
+                        right: 40px;
+                        transform: rotate(45deg) translateY(-50%);
+                        border-top: 1px solid white;
+                        border-right: 1px solid white;
+                    }`}
+            </style>
+            <li className="bg-gray-40 h-16 flex my-4 relative after-arrow">
+              <a href="/" className="flex items-center flex-grow pl-8">
+                <span className="text-2xl">Home</span>
+              </a>
+            </li>
+            <li className="bg-gray-40 h-16 flex my-4 relative after-arrow">
+              <a href="/" className="flex items-center flex-grow pl-8">
+                <span className="text-2xl">About us</span>
+              </a>
+            </li>
+
             <li
+              className="bg-gray-40 h-16 flex my-4 relative after-arrow"
               onClick={() =>
                 setIsOpenSubmenu((prevIsOpenSubMenu) => !prevIsOpenSubMenu)
               }
             >
-              Design Tent
+              <div className="flex items-center flex-grow pl-8 cursor-pointer">
+                <span className="text-2xl">Design Tent</span>
+              </div>
             </li>
-            <li>Contact</li>
           </ul>
+          <div className="mt-12">
+            <div className="mx-4 pl-4 py-1 border-b-white border-b-[1px]">
+              <h3 className="text-lg">contact</h3>
+            </div>
+          </div>
         </div>
       </div>
       <SubMenu
