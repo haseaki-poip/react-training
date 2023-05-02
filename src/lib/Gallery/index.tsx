@@ -36,8 +36,15 @@ const Gallery = () => {
           <div className="break-inside-avoid bg-white mb-2 h-32"></div>
         </div>
 
-        <div className="w-full h-24 opacity-90 bg-gradient-to-b from-transparent to-black absolute left-0 bottom-0 z-10">
-          <div className="absolute right-0 bottom-0 z-20">
+        <div
+          className={
+            "w-full h-24 absolute left-0 bottom-0 z-10 " +
+            (isExpand
+              ? ""
+              : "opacity-90 bg-gradient-to-b from-transparent to-black")
+          }
+        >
+          <div className="absolute right-0 bottom-0">
             <button
               onClick={() => setIsExpand((prevIsExpand) => !prevIsExpand)}
               className="text-white px-5 py-2"
