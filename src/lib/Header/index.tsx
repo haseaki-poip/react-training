@@ -49,10 +49,10 @@ const Header = (props: Props) => {
           className="absolute left-8 top-1/2 z-50 -translate-y-1/2 text-white cursor-pointer"
           onClick={() => setIsOpenMenu((prevIsOpenMenu) => !prevIsOpenMenu)}
         >
-          <MenuButton isOpen={isOpenMenu} />
+          <MenuButton isOpenMenu={isOpenMenu} />
         </div>
       </div>
-      <SideMenu isOpen={isOpenMenu} />
+      <SideMenu isOpenMenu={isOpenMenu} />
     </div>
   );
 };
