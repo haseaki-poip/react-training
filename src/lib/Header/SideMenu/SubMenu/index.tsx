@@ -7,6 +7,7 @@ type Props = {
 
 const SubMenu = memo(({ isOpenSubMenu, handleBackButton }: Props) => {
   return (
+    // 親要素のsidemenuを基準とした配置
     <div
       className={
         "w-full md:w-96 h-screen absolute top-0 z-50 md:-z-30 transition-all linear duration-500 " +

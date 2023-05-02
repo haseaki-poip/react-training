@@ -3,6 +3,7 @@ import SubMenu from "./SubMenu";
 
 const SideMenu = memo(({ isOpenMenu }: { isOpenMenu: boolean }) => {
   const [isOpenSubMenu, setIsOpenSubmenu] = useState(false);
+  // sidemenuが閉じた時は強制的にsubmenuも閉じる
   useEffect(() => {
     if (!isOpenMenu) {
       setIsOpenSubmenu(false);
