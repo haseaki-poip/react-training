@@ -15,7 +15,7 @@ const SideMenu = memo(({ isOpenMenu }: { isOpenMenu: boolean }) => {
     // absolute top-full (100%)を設定することで基準の親要素のbottomにtopが合う
     <div
       className={
-        "w-full md:w-96 h-screen absolute top-full z-40 transition-all linear duration-500 " +
+        "w-full md:w-96 h-screen absolute top-full z-40 transition-all ease-linear duration-300 " +
         (isOpenMenu ? "left-0" : "-left-full md:-left-96")
       }
     >
@@ -36,12 +36,12 @@ const SideMenu = memo(({ isOpenMenu }: { isOpenMenu: boolean }) => {
                     }`}
           </style>
           <div
-            className="h-16 flex my-4 group relative after-arrow"
+            className="h-16 flex my-4 group"
             onClick={() =>
               setIsOpenSubmenu((prevIsOpenSubMenu) => !prevIsOpenSubMenu)
             }
           >
-            <div className="flex items-center flex-grow pl-8 cursor-pointer">
+            <div className="flex items-center flex-grow pl-8 cursor-pointer relative after-arrow">
               <span className="text-2xl transition-all linear duration-300 group-hover:translate-x-4">
                 Design Tent
               </span>
