@@ -8,43 +8,43 @@ const MenuList = memo(({ listNameArray, listType }: Props) => {
   return (
     <ul>
       <style>
-        {`.after-arrow:after {
-                        content: ' ';
-                        width: ${listType === "normal" ? "8px" : "16px"};
-                        height: ${listType === "normal" ? "8px" : "16px"};
+        {`
+        .border-bottom-move span:after {
+                        content: " ";
+                        width: 0%;
                         position: absolute;
-                        top: 50%;
-                        right: 40px;
-                        transform: rotate(45deg) translateY(-50%);
-                        border-top: 1px solid white;
-                        border-right: 1px solid white;
-                    }`}
+                        left: 0;
+                        bottom: -4px;
+                        border-bottom: 2px solid white;
+                        transition: width .2s linear .1s;
+        }
+        .border-bottom-move:hover span:after {
+            width: 140%;
+        }
+        `}
       </style>
+      {/* タイプによってサイズを変える */}
       {listType === "normal"
         ? listNameArray.map((listName, key) => {
             return (
-              <li
-                key={key}
-                className="h-10 flex my-1 group relative after-arrow"
-              >
-                <a href="/" className="flex items-center flex-grow pl-8">
-                  <span className="text-base transition-all linear duration-300 group-hover:translate-x-4">
-                    {listName}
-                  </span>
+              <li key={key} className="h-10 flex my-1">
+                <a
+                  href="/"
+                  className="flex items-center flex-grow pl-8 border-bottom-move"
+                >
+                  <span className="relative text-base">{listName}</span>
                 </a>
               </li>
             );
           })
         : listNameArray.map((listName, key) => {
             return (
-              <li
-                key={key}
-                className="h-16 flex my-4 group relative after-arrow"
-              >
-                <a href="/" className="flex items-center flex-grow pl-8">
-                  <span className="text-2xl transition-all linear duration-300 group-hover:translate-x-4">
-                    {listName}
-                  </span>
+              <li key={key} className="h-16 flex my-4">
+                <a
+                  href="/"
+                  className="flex items-center flex-grow pl-8 border-bottom-move"
+                >
+                  <span className="relative text-2xl">{listName}</span>
                 </a>
               </li>
             );
